@@ -23,6 +23,101 @@
 [![License](http://img.shields.io/:license-Apache%202-blue.svg)](https://github.com/apache/arrow/blob/main/LICENSE.txt)
 [![Twitter Follow](https://img.shields.io/twitter/follow/apachearrow.svg?style=social&label=Follow)](https://twitter.com/apachearrow)
 
+## Intel IAA Modifications
+
+In order to use arrow with the Intel IAA Accelerator, we need to build both arrow and QPL separately.
+
+Arrow build instructions:
+```
+git clone https://github.com/apache/arrow.git
+pushd arrow
+git submodule update --init
+export PARQUET_TEST_DATA="${PWD}/cpp/submodules/parquet-testing/data"
+export ARROW_TEST_DATA="${PWD}/testing/data"
+popd
+
+mkdir dist
+
+export ARROW_HOME=$(pwd)/dist
+export LD_LIBRARY_PATH=$(pwd)/dist/lib:$LD_LIBRARY_PATH
+export CMAKE_PREFIX_PATH=$ARROW_HOME:$CMAKE_PREFIX_PATH
+
+export QPL_HOME=/home/raunaks3/qpl_library
+export CMAKE_PREFIX_PATH=$QPL_HOME:$CMAKE_PREFIX_PATH
+
+mkdir arrow/cpp/build
+pushd arrow/cpp/build
+
+cmake -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH \
+        -DCMAKE_INSTALL_PREFIX=$ARROW_HOME \
+        -DCMAKE_INSTALL_LIBDIR=lib \
+        -DCMAKE_BUILD_TYPE=Debug \
+        -DARROW_BUILD_TESTS=ON \
+        -DARROW_COMPUTE=ON \
+        -DARROW_CSV=ON \
+        -DARROW_DATASET=ON \
+        -DARROW_FILESYSTEM=ON \
+        -DARROW_HDFS=ON \
+        -DARROW_JSON=ON \
+        -DARROW_PARQUET=ON \
+        -DARROW_WITH_BROTLI=ON \
+        -DARROW_WITH_BZ2=ON \
+        -DARROW_WITH_LZ4=ON \
+        -DARROW_WITH_SNAPPY=ON \
+        -DARROW_WITH_ZLIB=ON \
+        -DARROW_WITH_ZSTD=ON \
+        -DPARQUET_REQUIRE_ENCRYPTION=ON \
+        -DARROW_EXTRA_ERROR_CONTEXT="ON" \
+        ..
+
+make -j8
+make install
+popd
+
+pushd arrow/python
+export PYARROW_WITH_PARQUET=1
+export PYARROW_WITH_DATASET=1
+export PYARROW_PARALLEL=8
+export PYARROW_WITH_PARQUET_ENCRYPTION=1
+python setup.py build_ext --inplace
+popd
+
+```
+
+For building QPL,
+```
+git clone --recursive https://github.com/intel/qpl.git ./qpl_library
+cd qpl_library
+mkdir build
+cd build
+
+mkdir ../qpl_installation
+cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=../qpl_installation ..
+cmake --build . --target install
+
+# To configure the IAA device (in case we are using hardware path):
+sudo python3 /home/<USER>/qpl_library/qpl_installation/share/QPL/scripts/accel_conf.py --load=/home/<USER>/qpl_library/qpl_installation/share/QPL/configs/1n1d1e1w-s-n2.conf
+```
+
+The testing file is `arrow/cpp/examples/parquet/parquet_arrow/reader-writer.cc`.
+It creates a table, writes it to disk as a parquet file using compression with QPL, and then reads and decompresses the file (also using QPL). Currently this is working with both the software path (no accelerator) and hardware path (IAA accelerator).
+
+To test and run (note that if we change any source code in the main arrow repository we need to rebuild arrow before running the following):
+```
+cd arrow/cpp/examples/parquet/parquet_arrow
+mkdir qpl_build
+cd qpl_build
+cmake ..
+make
+./parquet-compression-example
+```
+
+TODOs - 
+1. Support QPL Codec - Currently the QPL codec has been implemented in place of the snappy codec. Ideally we want to create a new QPLCodec in a file `compression_qpl.cc` and support both snappy and QPL compression.
+2. Test in different settings and benchmark performance
+
+-----------------------------------------------
+
 ## Powering In-Memory Analytics
 
 Apache Arrow is a development platform for in-memory analytics. It contains a

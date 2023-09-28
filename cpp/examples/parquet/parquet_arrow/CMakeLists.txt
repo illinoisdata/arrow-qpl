@@ -16,6 +16,8 @@
 # under the License.
 
 # Require cmake that supports BYPRODUCTS in add_custom_command, ExternalProject_Add [1].
+include(CMakePrintHelpers)
+
 cmake_minimum_required(VERSION 3.16)
 
 project(parquet_arrow_example)
@@ -23,6 +25,15 @@ project(parquet_arrow_example)
 include(ExternalProject)
 include(FindPkgConfig)
 include(GNUInstallDirs)
+
+set(CMAKE_BUILD_TYPE Debug)
+# set(CMAKE_PREFIX_PATH /home/raunaks3/dist/)
+SET(CMAKE_PREFIX_PATH "/home/raunaks3/dist/;/home/raunaks3/qpl_library/")
+# cmake_print_variables(CMAKE_PREFIX_PATH)
+
+foreach(path ${CMAKE_PREFIX_PATH})
+  message("Path: " ${path})
+endforeach(path)
 
 option(PARQUET_LINK_SHARED "Link to the Parquet shared library" ON)
 
@@ -36,8 +47,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Look for installed packages the system
 find_package(Parquet REQUIRED)
+find_package(QPL CONFIG REQUIRED)
 
 add_executable(parquet-arrow-example reader_writer.cc)
+
+target_link_libraries(parquet-arrow-example QPL::qpl)
+
 if(PARQUET_LINK_SHARED)
   target_link_libraries(parquet-arrow-example Parquet::parquet_shared)
 else()

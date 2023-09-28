@@ -20,6 +20,7 @@
 #include <parquet/arrow/reader.h>
 #include <parquet/arrow/writer.h>
 #include <parquet/exception.h>
+#include <qpl/qpl.h>
 
 #include <iostream>
 
@@ -52,6 +53,7 @@ void write_parquet_file(const arrow::Table& table) {
   std::shared_ptr<arrow::io::FileOutputStream> outfile;
   PARQUET_ASSIGN_OR_THROW(
       outfile, arrow::io::FileOutputStream::Open("parquet-arrow-example.parquet"));
+
   // The last argument to the function call is the size of the RowGroup in
   // the parquet file. Normally you would choose this to be rather large but
   // for the example, we use a small value to have multiple RowGroups.
@@ -59,19 +61,39 @@ void write_parquet_file(const arrow::Table& table) {
       parquet::arrow::WriteTable(table, arrow::default_memory_pool(), outfile, 3));
 }
 
+// #1 Write out the data as a Parquet file
+void write_parquet_compressed_file(const arrow::Table& table, std::string path_to_compressed_file, parquet::Compression::type compressionCodec) {
+  std::shared_ptr<arrow::io::FileOutputStream> outfile;
+  std::cout << "Writing table to " << path_to_compressed_file << std::endl;
+
+  PARQUET_ASSIGN_OR_THROW(
+      outfile, arrow::io::FileOutputStream::Open(path_to_compressed_file));
+  
+  // Setup Parquet properties
+  parquet::WriterProperties::Builder builder;
+  // std::shared_ptr<parquet::WriterProperties> props = builder.compression(parquet::Compression::QPL)->build();
+  std::shared_ptr<parquet::WriterProperties> props = builder.compression(compressionCodec)->build();
+  
+  PARQUET_THROW_NOT_OK(
+    parquet::arrow::WriteTable(table, arrow::default_memory_pool(), outfile, table.num_rows(), props));
+
+}
+
 // #2: Fully read in the file
-void read_whole_file() {
-  std::cout << "Reading parquet-arrow-example.parquet at once" << std::endl;
+void read_whole_file(std::string path_to_parquet_file) {
+  std::cout << "Reading " << path_to_parquet_file << " at once" << std::endl;
   std::shared_ptr<arrow::io::ReadableFile> infile;
   PARQUET_ASSIGN_OR_THROW(infile,
-                          arrow::io::ReadableFile::Open("parquet-arrow-example.parquet",
+                          arrow::io::ReadableFile::Open(path_to_parquet_file,
                                                         arrow::default_memory_pool()));
 
   std::unique_ptr<parquet::arrow::FileReader> reader;
   PARQUET_THROW_NOT_OK(
       parquet::arrow::OpenFile(infile, arrow::default_memory_pool(), &reader));
+      
   std::shared_ptr<arrow::Table> table;
   PARQUET_THROW_NOT_OK(reader->ReadTable(&table));
+
   std::cout << "Loaded " << table->num_rows() << " rows in " << table->num_columns()
             << " columns." << std::endl;
 }
@@ -132,9 +154,15 @@ void read_single_column_chunk() {
 
 int main(int argc, char** argv) {
   std::shared_ptr<arrow::Table> table = generate_table();
-  write_parquet_file(*table);
-  read_whole_file();
-  read_single_rowgroup();
-  read_single_column();
-  read_single_column_chunk();
+  // write_parquet_file(*table);
+  write_parquet_compressed_file(*table, "parquet-compression-example.parquet", parquet::Compression::SNAPPY);
+
+  std::cout << "Rows: " << (*table).num_rows() << std::endl;
+  std::cout << "Cols: " << (*table).num_columns() << std::endl;
+
+  read_whole_file("parquet-compression-example.parquet");
+
+  // read_single_rowgroup();
+  // read_single_column();
+  // read_single_column_chunk();
 }

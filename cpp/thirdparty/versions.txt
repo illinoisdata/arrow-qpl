@@ -104,6 +104,8 @@ ARROW_RE2_BUILD_SHA256_CHECKSUM=f89c61410a072e5cbcf8c27e3a778da7d6fd2f2b5b1445cd
 # 1.1.9 is patched to implement https://github.com/google/snappy/pull/148 if this is bumped, remove the patch
 ARROW_SNAPPY_BUILD_VERSION=1.1.9
 ARROW_SNAPPY_BUILD_SHA256_CHECKSUM=75c1fbb3d618dd3a0483bff0e26d0a92b495bbe5059c8b4f1c962b478b6e06e7
+ARROW_QPL_BUILD_VERSION=v1.2.0
+ARROW_QPL_BUILD_SHA256_CHECKSUM=c9b4d4d84102deb0a7310163093883af6bb1e3037e501d17cd428ead5dff4366
 ARROW_SUBSTRAIT_BUILD_VERSION=v0.27.0
 ARROW_SUBSTRAIT_BUILD_SHA256_CHECKSUM=4ed375f69d972a57fdc5ec406c17003a111831d8640d3f1733eccd4b3ff45628
 ARROW_S2N_TLS_BUILD_VERSION=v1.3.35
@@ -165,6 +167,7 @@ DEPENDENCIES=(
   "ARROW_RE2_URL re2-${ARROW_RE2_BUILD_VERSION}.tar.gz https://github.com/google/re2/archive/${ARROW_RE2_BUILD_VERSION}.tar.gz"
   "ARROW_S2N_TLS_URL s2n-${ARROW_S2N_TLS_BUILD_VERSION}.tar.gz https://github.com/aws/s2n-tls/archive/${ARROW_S2N_TLS_BUILD_VERSION}.tar.gz"
   "ARROW_SNAPPY_URL snappy-${ARROW_SNAPPY_BUILD_VERSION}.tar.gz https://github.com/google/snappy/archive/${ARROW_SNAPPY_BUILD_VERSION}.tar.gz"
+  "ARROW_QPL_URL qpl-${ARROW_QPL_BUILD_VERSION}.tar.gz https://github.com/intel/qpl/archive/refs/tags/${ARROW_QPL_BUILD_VERSION}.tar.gz"
   "ARROW_THRIFT_URL thrift-${ARROW_THRIFT_BUILD_VERSION}.tar.gz https://archive.apache.org/dist/thrift/${ARROW_THRIFT_BUILD_VERSION}/thrift-${ARROW_THRIFT_BUILD_VERSION}.tar.gz"
   "ARROW_UCX_URL ucx-${ARROW_UCX_BUILD_VERSION}.tar.gz https://github.com/openucx/ucx/archive/v${ARROW_UCX_BUILD_VERSION}.tar.gz"
   "ARROW_UTF8PROC_URL utf8proc-${ARROW_UTF8PROC_BUILD_VERSION}.tar.gz https://github.com/JuliaStrings/utf8proc/archive/${ARROW_UTF8PROC_BUILD_VERSION}.tar.gz"

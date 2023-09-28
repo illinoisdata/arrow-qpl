@@ -17,6 +17,7 @@
 
 #include "parquet/arrow/reader.h"
 
+#include <iostream>
 #include <algorithm>
 #include <cstring>
 #include <memory>
@@ -196,6 +197,7 @@ class FileReaderImpl : public FileReader {
 
   Status ReadTable(const std::vector<int>& indices,
                    std::shared_ptr<Table>* out) override {
+    std::cout << "Calling ReadTable()" << std::endl;
     return ReadRowGroups(Iota(reader_->metadata()->num_row_groups()), indices, out);
   }
 
@@ -1226,6 +1228,13 @@ Status FileReaderImpl::ReadRowGroups(const std::vector<int>& row_groups,
                                 reader_properties_.cache_options());
     END_PARQUET_CATCH_EXCEPTIONS
   }
+
+  std::cout << "Reading Row Groups with " << row_groups.size() << " row groups and " << column_indices.size() << " col indices";
+  // for(size_t index_row_group=0;index_row_group<row_groups.size();index_row_group++) {
+  //   std::cout << row_groups[index_row_group] << " ";
+  // }
+
+  std::cout << std::endl;
 
   auto fut = DecodeRowGroups(/*self=*/nullptr, row_groups, column_indices,
                              /*cpu_executor=*/nullptr);
