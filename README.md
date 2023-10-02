@@ -71,9 +71,10 @@ cmake -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH \
         ..
 
 make -j8
-make install
+sudo make install
 popd
 
+# If you want to use python later.
 pushd arrow/python
 export PYARROW_WITH_PARQUET=1
 export PYARROW_WITH_DATASET=1

@@ -333,6 +333,11 @@ if(ARROW_WITH_ZSTD)
   list(APPEND ARROW_SRCS util/compression_zstd.cc)
 endif()
 
+if(ARROW_WITH_QPL)
+  add_definitions(-DARROW_WITH_QPL)
+  list(APPEND ARROW_SRCS util/compression_qpl.cc)
+endif()
+
 set(ARROW_TESTING_SHARED_LINK_LIBS arrow::flatbuffers rapidjson::rapidjson arrow_shared
                                    ${ARROW_GTEST_GTEST})
 set(ARROW_TESTING_STATIC_LINK_LIBS arrow::flatbuffers rapidjson::rapidjson arrow_static

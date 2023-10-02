@@ -94,6 +94,8 @@ static inline Compression::type FromThriftUnsafe(format::CompressionCodec::type 
       return Compression::LZ4;
     case format::CompressionCodec::ZSTD:
       return Compression::ZSTD;
+    case format::CompressionCodec::QPL:
+      return Compression::QPL;
     default:
       DCHECK(false) << "Cannot reach here";
       return Compression::UNCOMPRESSED;
@@ -284,6 +286,8 @@ static inline format::CompressionCodec::type ToThrift(Compression::type type) {
       return format::CompressionCodec::UNCOMPRESSED;
     case Compression::SNAPPY:
       return format::CompressionCodec::SNAPPY;
+    case Compression::QPL:
+      return format::CompressionCodec::QPL;
     case Compression::GZIP:
       return format::CompressionCodec::GZIP;
     case Compression::LZO:
@@ -298,7 +302,7 @@ static inline format::CompressionCodec::type ToThrift(Compression::type type) {
     case Compression::ZSTD:
       return format::CompressionCodec::ZSTD;
     default:
-      DCHECK(false) << "Cannot reach here";
+      DCHECK(false) << "Cannot reach hereee";
       return format::CompressionCodec::UNCOMPRESSED;
   }
 }

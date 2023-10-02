@@ -156,6 +156,7 @@ int main(int argc, char** argv) {
   std::shared_ptr<arrow::Table> table = generate_table();
   // write_parquet_file(*table);
   write_parquet_compressed_file(*table, "parquet-compression-example.parquet", parquet::Compression::SNAPPY);
+  // write_parquet_compressed_file(*table, "parquet-compression-example.parquet", parquet::Compression::QPL);
 
   std::cout << "Rows: " << (*table).num_rows() << std::endl;
   std::cout << "Cols: " << (*table).num_columns() << std::endl;

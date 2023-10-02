@@ -23,7 +23,7 @@
 #include <cstdint>
 #include <memory>
 
-#include <snappy.h>
+// #include <snappy.h>
 #include <qpl/qpl.h>
 #include "examples_utils.hpp"
 
@@ -43,7 +43,7 @@ namespace {
 // ----------------------------------------------------------------------
 // Snappy implementation
 
-class SnappyCodec : public Codec {
+class QPLCodec : public Codec {
  public:
   Result<int64_t> Decompress(int64_t input_len, const uint8_t* input,
                              int64_t output_buffer_len, uint8_t* output_buffer) override {
@@ -126,15 +126,15 @@ class SnappyCodec : public Codec {
 
     // const uint32_t decompressed_size = job->total_out;
 
-    // std::ofstream compressionStats("/home/raunaks3/arrow/cpp/examples/parquet/parquet_arrow/qpl_build/compression_stats.txt");
+    std::ofstream compressionStats("/home/raunaks3/arrow/cpp/examples/parquet/parquet_arrow/qpl_build/compression_stats.txt");
     
-    // if (compressionStats.is_open())
-    //     compressionStats << "\t" << input_len << ", " << output_buffer_len << ", ";
-    //     // compressionStats << decompressed_size << "\n";
-    // else
-    //     std::cout << "Something went wrong with opening the file!";
+    if (compressionStats.is_open())
+        compressionStats << "\t" << input_len << ", " << output_buffer_len << ", ";
+        // compressionStats << decompressed_size << "\n";
+    else
+        std::cout << "Something went wrong with opening the file!";
     
-    // compressionStats.close();
+    compressionStats.close();
 
     std::cout << input_len << std::endl;
     std::cout << output_buffer_len << std::endl;
@@ -166,7 +166,8 @@ class SnappyCodec : public Codec {
   int64_t MaxCompressedLen(int64_t input_len,
                            const uint8_t* ARROW_ARG_UNUSED(input)) override {
     DCHECK_GE(input_len, 0);
-    return snappy::MaxCompressedLength(static_cast<size_t>(input_len));
+    return -1;
+    // return snappy::MaxCompressedLength(static_cast<size_t>(input_len));
   }
 
   // Result<int64_t> Compress(int64_t input_len, const uint8_t* input,
@@ -268,14 +269,14 @@ class SnappyCodec : public Codec {
   }
 
   Result<std::shared_ptr<Compressor>> MakeCompressor() override {
-    return Status::NotImplemented("Streaming compression unsupported with Snappy");
+    return Status::NotImplemented("Streaming compression unsupported with QPL");
   }
 
   Result<std::shared_ptr<Decompressor>> MakeDecompressor() override {
-    return Status::NotImplemented("Streaming decompression unsupported with Snappy");
+    return Status::NotImplemented("Streaming decompression unsupported with QPL");
   }
 
-  Compression::type compression_type() const override { return Compression::SNAPPY; }
+  Compression::type compression_type() const override { return Compression::QPL; }
   int minimum_compression_level() const override { return kUseDefaultCompressionLevel; }
   int maximum_compression_level() const override { return kUseDefaultCompressionLevel; }
   int default_compression_level() const override { return kUseDefaultCompressionLevel; }
@@ -283,7 +284,7 @@ class SnappyCodec : public Codec {
 
 }  // namespace
 
-std::unique_ptr<Codec> MakeSnappyCodec() { return std::make_unique<SnappyCodec>(); }
+std::unique_ptr<Codec> MakeQPLCodec() { return std::make_unique<QPLCodec>(); }
 
 }  // namespace internal
 }  // namespace util

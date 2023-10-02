@@ -53,6 +53,9 @@ std::unique_ptr<Codec> MakeGZipCodec(int compression_level = kGZipDefaultCompres
 // Snappy
 std::unique_ptr<Codec> MakeSnappyCodec();
 
+// QPL
+std::unique_ptr<Codec> MakeQPLCodec();
+
 // Lz4 Codecs
 constexpr int kLz4DefaultCompressionLevel = 1;
 
