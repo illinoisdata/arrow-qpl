@@ -19,6 +19,7 @@
 
 #include "parquet/windows_compatibility.h"
 
+#include <iostream>
 #include <cstdint>
 #include <limits>
 
@@ -214,8 +215,10 @@ inline typename Compression::type LoadEnumSafe(const format::CompressionCodec::t
   const auto min_value =
       static_cast<decltype(raw_value)>(format::CompressionCodec::UNCOMPRESSED);
   const auto max_value =
-      static_cast<decltype(raw_value)>(format::CompressionCodec::LZ4_RAW);
+      // static_cast<decltype(raw_value)>(format::CompressionCodec::LZ4_RAW);
+      static_cast<decltype(raw_value)>(format::CompressionCodec::QPL);
   if (raw_value < min_value || raw_value > max_value) {
+    std::cout << "error" << std::endl;
     return Compression::UNCOMPRESSED;
   }
   return FromThriftUnsafe(*in);
@@ -286,8 +289,6 @@ static inline format::CompressionCodec::type ToThrift(Compression::type type) {
       return format::CompressionCodec::UNCOMPRESSED;
     case Compression::SNAPPY:
       return format::CompressionCodec::SNAPPY;
-    case Compression::QPL:
-      return format::CompressionCodec::QPL;
     case Compression::GZIP:
       return format::CompressionCodec::GZIP;
     case Compression::LZO:
@@ -301,6 +302,8 @@ static inline format::CompressionCodec::type ToThrift(Compression::type type) {
       return format::CompressionCodec::LZ4;
     case Compression::ZSTD:
       return format::CompressionCodec::ZSTD;
+    case Compression::QPL:
+      return format::CompressionCodec::QPL;
     default:
       DCHECK(false) << "Cannot reach hereee";
       return format::CompressionCodec::UNCOMPRESSED;

@@ -495,6 +495,7 @@ enum CompressionCodec {
   LZ4 = 5;     // DEPRECATED (Added in 2.4)
   ZSTD = 6;    // Added in 2.4
   LZ4_RAW = 7; // Added in 2.9
+  QPL = 8;
 }
 
 enum PageType {

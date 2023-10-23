@@ -242,6 +242,8 @@ class ORCFileReader::Impl {
         return Compression::LZ4;
       case liborc::CompressionKind::CompressionKind_ZSTD:
         return Compression::ZSTD;
+      case liborc::CompressionKind::CompressionKind_QPL:
+        return Compression::QPL;
       default:
         // liborc::CompressionKind::CompressionKind_MAX isn't really a compression type
         return Status::Invalid("Compression type not supported by Arrow");
@@ -726,6 +728,9 @@ Result<liborc::WriterOptions> MakeOrcWriterOptions(
       break;
     case Compression::ZSTD:
       orc_options.setCompression(liborc::CompressionKind::CompressionKind_ZSTD);
+      break;
+    case Compression::QPL:
+      orc_options.setCompression(liborc::CompressionKind::CompressionKind_QPL);
       break;
     default:
       return Status::Invalid("Compression type not supported by ORC");

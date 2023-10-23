@@ -189,3 +189,4 @@ if(ARROW_BUILD_BENCHMARKS)
     target_link_libraries(arrow-dataset-scanner-benchmark PUBLIC arrow_dataset_shared)
   endif()
 endif()
+

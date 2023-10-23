@@ -65,14 +65,14 @@ class QPLCodec : public Codec {
         throw std::runtime_error("An error acquired during job size getting.");
     }
     else {
-      std::cout << "It's working" << std::endl;
+      std::cout << "It's working with QPL Codec" << std::endl;
     }
 
     job_buffer = std::make_unique<uint8_t[]>(size);
     qpl_job *job = reinterpret_cast<qpl_job *>(job_buffer.get());
     status = qpl_init_job(execution_path, job);
     if (status != QPL_STS_OK) {
-        throw std::runtime_error("An error acquired during compression job initializing.");
+        throw std::runtime_error("An error acquired during decompression job initializing.");
     }
 
     uint8_t* casted_input_ptr = const_cast<uint8_t*>(input);
@@ -126,15 +126,15 @@ class QPLCodec : public Codec {
 
     // const uint32_t decompressed_size = job->total_out;
 
-    std::ofstream compressionStats("/home/raunaks3/arrow/cpp/examples/parquet/parquet_arrow/qpl_build/compression_stats.txt");
+    // std::ofstream compressionStats("/home/raunaks3/arrow/cpp/examples/parquet/parquet_arrow/qpl_build/compression_stats.txt");
     
-    if (compressionStats.is_open())
-        compressionStats << "\t" << input_len << ", " << output_buffer_len << ", ";
-        // compressionStats << decompressed_size << "\n";
-    else
-        std::cout << "Something went wrong with opening the file!";
+    // if (compressionStats.is_open())
+    //     compressionStats << "\t" << input_len << ", " << output_buffer_len << ", ";
+    //     // compressionStats << decompressed_size << "\n";
+    // else
+    //     std::cout << "Something went wrong with opening the file!";
     
-    compressionStats.close();
+    // compressionStats.close();
 
     std::cout << input_len << std::endl;
     std::cout << output_buffer_len << std::endl;
@@ -166,8 +166,14 @@ class QPLCodec : public Codec {
   int64_t MaxCompressedLen(int64_t input_len,
                            const uint8_t* ARROW_ARG_UNUSED(input)) override {
     DCHECK_GE(input_len, 0);
-    return -1;
     // return snappy::MaxCompressedLength(static_cast<size_t>(input_len));
+
+    size_t source_bytes = static_cast<size_t>(input_len);
+    // std::cout << "MaxCompressedLength: " << static_cast<size_t>(32 + source_bytes + source_bytes / 6) << std::endl;
+    return static_cast<size_t>(32 + source_bytes + source_bytes / 6);
+
+    // return 0;
+    // return static_cast<size_t>(input_len);
   }
 
   // Result<int64_t> Compress(int64_t input_len, const uint8_t* input,
