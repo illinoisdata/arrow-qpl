@@ -216,6 +216,8 @@ garrow_compression_type_from_raw(arrow::Compression::type arrow_type)
     return GARROW_COMPRESSION_TYPE_LZO;
   case arrow::Compression::type::BZ2:
     return GARROW_COMPRESSION_TYPE_BZ2;
+  case arrow::Compression::type::QPL:
+    return GARROW_COMPRESSION_TYPE_QPL;
   default:
     return GARROW_COMPRESSION_TYPE_UNCOMPRESSED;
   }
@@ -241,6 +243,8 @@ garrow_compression_type_to_raw(GArrowCompressionType type)
     return arrow::Compression::type::LZO;
   case GARROW_COMPRESSION_TYPE_BZ2:
     return arrow::Compression::type::BZ2;
+  case GARROW_COMPRESSION_TYPE_QPL:
+    return arrow::Compression::type::QPL;
   default:
     return arrow::Compression::type::UNCOMPRESSED;
   }

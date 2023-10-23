@@ -80,6 +80,7 @@
         "ARROW_WITH_LZ4": "ON",
         "ARROW_WITH_RE2": "ON",
         "ARROW_WITH_SNAPPY": "ON",
+        "ARROW_WITH_QPL": "ON",
         "ARROW_WITH_UTF8PROC": "ON",
         "ARROW_WITH_ZLIB": "ON",
         "ARROW_WITH_ZSTD": "ON"

@@ -23,6 +23,12 @@
 #include <qpl/qpl.h>
 
 #include <iostream>
+#include <arrow/ipc/api.h>
+
+#include "arrow/builder.h"
+#include "arrow/table.h"
+#include "arrow/io/file.h"
+#include <parquet/properties.h>
 
 // #0 Build dummy data to pass around
 // To have some input data, we first create an Arrow Table that holds
@@ -152,16 +158,44 @@ void read_single_column_chunk() {
   std::cout << std::endl;
 }
 
+std::string arrowTableToByteString(const std::shared_ptr<arrow::Table>& table) {
+    auto stream = arrow::io::BufferOutputStream::Create().ValueOrDie();
+    auto batchWriter = arrow::ipc::MakeStreamWriter(stream, table->schema()).ValueOrDie();
+
+    auto status = batchWriter->WriteTable(*table);
+    if (not status.ok()) {
+        throw std::runtime_error(
+            "Couldn't write Arrow Table to byte string. Arrow status was: '" +
+            status.ToString() + "'.");
+    }
+
+    std::shared_ptr<arrow::Buffer> buffer = stream->Finish().ValueOrDie();
+    return buffer->ToHexString();
+}
+
 int main(int argc, char** argv) {
   std::shared_ptr<arrow::Table> table = generate_table();
   // write_parquet_file(*table);
+
+  std::cout << "Using Snappy Codec with QPL" << std::endl;
+
   write_parquet_compressed_file(*table, "parquet-compression-example.parquet", parquet::Compression::SNAPPY);
-  // write_parquet_compressed_file(*table, "parquet-compression-example.parquet", parquet::Compression::QPL);
 
   std::cout << "Rows: " << (*table).num_rows() << std::endl;
   std::cout << "Cols: " << (*table).num_columns() << std::endl;
 
   read_whole_file("parquet-compression-example.parquet");
+
+  std::cout << "Using QPL Codec with QPL" << std::endl;
+  write_parquet_compressed_file(*table, "parquet-compression-example2.parquet", parquet::Compression::QPL);
+
+  std::cout << "Rows: " << (*table).num_rows() << std::endl;
+  std::cout << "Cols: " << (*table).num_columns() << std::endl;
+
+  // tableAsByteString = arrowTableToByteString(table);
+  // std::cout << tableAsByteString << std::endl;
+
+  read_whole_file("parquet-compression-example2.parquet");
 
   // read_single_rowgroup();
   // read_single_column();
