@@ -1133,12 +1133,13 @@ cdef compression_name_from_enum(ParquetCompression compression_):
         ParquetCompression_BROTLI: 'BROTLI',
         ParquetCompression_LZ4: 'LZ4',
         ParquetCompression_ZSTD: 'ZSTD',
+        ParquetCompression_QPL: 'QPL',
     }.get(compression_, 'UNKNOWN')
 
 
 cdef int check_compression_name(name) except -1:
     if name.upper() not in {'NONE', 'SNAPPY', 'GZIP', 'LZO', 'BROTLI', 'LZ4',
-                            'ZSTD'}:
+                            'ZSTD', 'QPL'}:
         raise ArrowException("Unsupported compression: " + name)
     return 0
 
@@ -1157,6 +1158,8 @@ cdef ParquetCompression compression_from_name(name):
         return ParquetCompression_LZ4
     elif name == 'ZSTD':
         return ParquetCompression_ZSTD
+    elif name == 'QPL':
+        return ParquetCompression_QPL
     else:
         return ParquetCompression_UNCOMPRESSED
 

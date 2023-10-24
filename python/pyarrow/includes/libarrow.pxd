@@ -2665,6 +2665,7 @@ cdef extern from "arrow/util/compression.h" namespace "arrow" nogil:
         CCompressionType_LZ4" arrow::Compression::LZ4"
         CCompressionType_LZ4_FRAME" arrow::Compression::LZ4_FRAME"
         CCompressionType_BZ2" arrow::Compression::BZ2"
+        CCompressionType_QPL" arrow::Compression::QPL"
 
     cdef cppclass CCodec" arrow::util::Codec":
         @staticmethod

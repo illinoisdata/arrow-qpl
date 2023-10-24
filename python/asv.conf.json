@@ -102,6 +102,7 @@
         "snappy": [],
         "thrift-cpp": [],
         "zstd": [],
+        "qpl": [],
     },
 
     // Combinations of libraries/python versions can be excluded/included

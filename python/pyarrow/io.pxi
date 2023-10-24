@@ -2096,6 +2096,8 @@ cdef CCompressionType _ensure_compression(str name) except *:
         return CCompressionType_SNAPPY
     elif uppercase == 'ZSTD':
         return CCompressionType_ZSTD
+    elif uppercase == 'QPL':
+        return CCompressionType_QPL
     else:
         raise ValueError('Invalid value for compression: {!r}'.format(name))
 
@@ -2281,7 +2283,7 @@ cdef class Codec(_Weakrefable):
     @property
     def compression_level(self):
         """Returns the compression level parameter of the codec"""
-        if self.name == 'snappy':
+        if (self.name == 'snappy') or (self.name == 'qpl'):
             return None
         return self.unwrap().compression_level()
 

@@ -66,6 +66,7 @@ cmake -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH \
         -DARROW_WITH_SNAPPY=ON \
         -DARROW_WITH_ZLIB=ON \
         -DARROW_WITH_ZSTD=ON \
+        -DARROW_WITH_QPL=ON \
         -DPARQUET_REQUIRE_ENCRYPTION=ON \
         -DARROW_EXTRA_ERROR_CONTEXT="ON" \
         ..
@@ -73,11 +74,29 @@ cmake -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH \
 make -j8
 sudo make install
 popd
+```
 
-# If you want to use python later.
+If you want to use python as well:
+
+```
+python3 -m venv pyarrow-dev
+source ./pyarrow-dev/bin/activate
+pip install -r arrow/python/requirements-build.txt
+pip install ipykernel
+
 pushd arrow/python
 export PYARROW_WITH_PARQUET=1
 export PYARROW_WITH_DATASET=1
+export PYARROW_WITH_SNAPPY=1
+export PYARROW_WITH_ZLIB=1
+export PYARROW_WITH_QPL=1
+export PYARROW_WITH_ZSTD=1
+export PYARROW_WITH_BZ2=1
+export PYARROW_WITH_BROTLI=1
+export PYARROW_WITH_LZ4=1
+export PYARROW_WITH_HDFS=1
+export PYARROW_WITH_CSV=1
+export PYARROW_WITH_JSON=1
 export PYARROW_PARALLEL=8
 export PYARROW_WITH_PARQUET_ENCRYPTION=1
 python setup.py build_ext --inplace
@@ -114,8 +133,7 @@ make
 ```
 
 TODOs - 
-1. Support QPL Codec - Currently the QPL codec has been implemented in place of the snappy codec. Ideally we want to create a new QPLCodec in a file `compression_qpl.cc` and support both snappy and QPL compression.
-2. Test in different settings and benchmark performance
+1. Test in different settings and benchmark performance
 
 -----------------------------------------------
 

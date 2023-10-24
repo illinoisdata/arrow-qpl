@@ -59,7 +59,7 @@ std::unique_ptr<Codec> GetCodec(Compression::type codec) {
 std::unique_ptr<Codec> GetCodec(Compression::type codec,
                                 const CodecOptions& codec_options) {
 
-  std::cout << "GetCodec " << Codec::GetCodecAsString(codec) << std::endl;
+  // std::cout << "GetCodec " << Codec::GetCodecAsString(codec) << std::endl;
 
   std::unique_ptr<Codec> result;
   if (codec == Compression::LZO) {

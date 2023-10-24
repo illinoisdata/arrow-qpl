@@ -50,6 +50,7 @@ groups = [
     'slow',
     'requires_testing_data',
     'zstd',
+    'qpl',
 ]
 
 defaults = {
@@ -80,6 +81,7 @@ defaults = {
     'snappy': Codec.is_available('snappy'),
     'substrait': False,
     'zstd': Codec.is_available('zstd'),
+    'qpl': Codec.is_available('qpl'),
 }
 
 try:

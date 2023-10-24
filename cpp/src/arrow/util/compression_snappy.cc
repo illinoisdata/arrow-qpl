@@ -24,7 +24,7 @@
 #include <memory>
 
 #include <snappy.h>
-#include <qpl/qpl.h>
+// #include <qpl/qpl.h>
 #include "examples_utils.hpp"
 
 #include "arrow/result.h"
@@ -242,7 +242,7 @@ class SnappyCodec : public Codec {
   Result<int64_t> Decompress(int64_t input_len, const uint8_t* input,
                              int64_t output_buffer_len, uint8_t* output_buffer) override {
     size_t decompressed_size;
-    std::cout << "Decompressing..." << std::endl;
+    std::cout << "Decompressing with snappy..." << std::endl;
     
     if (!snappy::GetUncompressedLength(reinterpret_cast<const char*>(input),
                                        static_cast<size_t>(input_len),

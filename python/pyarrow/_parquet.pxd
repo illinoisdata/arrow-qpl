@@ -130,6 +130,7 @@ cdef extern from "parquet/api/schema.h" namespace "parquet" nogil:
         ParquetCompression_BROTLI" parquet::Compression::BROTLI"
         ParquetCompression_LZ4" parquet::Compression::LZ4"
         ParquetCompression_ZSTD" parquet::Compression::ZSTD"
+        ParquetCompression_QPL" parquet::Compression::QPL"
 
     enum ParquetVersion" parquet::ParquetVersion::type":
         ParquetVersion_V1" parquet::ParquetVersion::PARQUET_1_0"

@@ -142,7 +142,7 @@ Result<int> Codec::DefaultCompressionLevel(Compression::type codec_type) {
 
 Result<std::unique_ptr<Codec>> Codec::Create(Compression::type codec_type,
                                              const CodecOptions& codec_options) {
-  std::cout << GetCodecAsString(codec_type) << std::endl;
+  // std::cout << GetCodecAsString(codec_type) << std::endl;
 
   if (!IsAvailable(codec_type)) {
     if (codec_type == Compression::LZO) {

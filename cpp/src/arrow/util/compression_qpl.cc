@@ -65,7 +65,7 @@ class QPLCodec : public Codec {
         throw std::runtime_error("An error acquired during job size getting.");
     }
     else {
-      std::cout << "It's working with QPL Codec" << std::endl;
+      std::cout << "Decompressing with QPL..." << std::endl;
     }
 
     job_buffer = std::make_unique<uint8_t[]>(size);
@@ -136,8 +136,8 @@ class QPLCodec : public Codec {
     
     // compressionStats.close();
 
-    std::cout << input_len << std::endl;
-    std::cout << output_buffer_len << std::endl;
+    // std::cout << input_len << std::endl;
+    // std::cout << output_buffer_len << std::endl;
     // std::cout << decompressed_size << std::endl;
 
     // return static_cast<int64_t>(decompressed_size);
@@ -183,7 +183,7 @@ class QPLCodec : public Codec {
                            int64_t output_buffer_len,
                            uint8_t* output_buffer) override {
     
-    std::cout << "Compressing..." << input_len << std::endl;
+    std::cout << "Compressing with QPL..." << input_len << std::endl;
 
     // ------------------- CANNED COMPRESSION ------------------------
     qpl_path_t execution_path = qpl_path_software;
@@ -261,7 +261,7 @@ class QPLCodec : public Codec {
     }
 
     const uint32_t compressed_size = job->total_out;
-    std::cout << "Compressed size: " << compressed_size << std::endl;
+    // std::cout << "Compressed size: " << compressed_size << std::endl;
 
     return static_cast<int64_t>(compressed_size);
     // ------------------- CANNED COMPRESSION...END ------------------------
