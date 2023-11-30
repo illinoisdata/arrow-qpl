@@ -10,7 +10,8 @@ from linetimer import CodeTimer, linetimer
 
 FILE_TYPE = "parquet"
 INCLUDE_IO = True
-DATASET_BASE_DIR = "/home/raunaks3/TPC-H/dbgen/data-1gb/parquet/"
+DATASET_BASE_DIR = "/home/raunaks3/TPC-H/dbgen/data-10gb/"
+DATASET_PARQUET_DIR = DATASET_BASE_DIR + "parquet/"
 
 def _scan_ds(path: str):
     path = f"{path}.{FILE_TYPE}"
@@ -29,35 +30,35 @@ def _scan_ds(path: str):
     return scan
 
 
-def get_line_item_ds(base_dir: str = DATASET_BASE_DIR) -> pl.LazyFrame:
+def get_line_item_ds(base_dir: str = DATASET_PARQUET_DIR) -> pl.LazyFrame:
     return _scan_ds(join(base_dir, "lineitem"))
 
 
-def get_orders_ds(base_dir: str = DATASET_BASE_DIR) -> pl.LazyFrame:
+def get_orders_ds(base_dir: str = DATASET_PARQUET_DIR) -> pl.LazyFrame:
     return _scan_ds(join(base_dir, "orders"))
 
 
-def get_customer_ds(base_dir: str = DATASET_BASE_DIR) -> pl.LazyFrame:
+def get_customer_ds(base_dir: str = DATASET_PARQUET_DIR) -> pl.LazyFrame:
     return _scan_ds(join(base_dir, "customer"))
 
 
-def get_region_ds(base_dir: str = DATASET_BASE_DIR) -> pl.LazyFrame:
+def get_region_ds(base_dir: str = DATASET_PARQUET_DIR) -> pl.LazyFrame:
     return _scan_ds(join(base_dir, "region"))
 
 
-def get_nation_ds(base_dir: str = DATASET_BASE_DIR) -> pl.LazyFrame:
+def get_nation_ds(base_dir: str = DATASET_PARQUET_DIR) -> pl.LazyFrame:
     return _scan_ds(join(base_dir, "nation"))
 
 
-def get_supplier_ds(base_dir: str = DATASET_BASE_DIR) -> pl.LazyFrame:
+def get_supplier_ds(base_dir: str = DATASET_PARQUET_DIR) -> pl.LazyFrame:
     return _scan_ds(join(base_dir, "supplier"))
 
 
-def get_part_ds(base_dir: str = DATASET_BASE_DIR) -> pl.LazyFrame:
+def get_part_ds(base_dir: str = DATASET_PARQUET_DIR) -> pl.LazyFrame:
     return _scan_ds(join(base_dir, "part"))
 
 
-def get_part_supp_ds(base_dir: str = DATASET_BASE_DIR) -> pl.LazyFrame:
+def get_part_supp_ds(base_dir: str = DATASET_PARQUET_DIR) -> pl.LazyFrame:
     return _scan_ds(join(base_dir, "partsupp"))
 
 
@@ -69,22 +70,21 @@ def save_tpch_parquet_files(compression_codec: str = "qpl"):
     for table_name in ["customer", "lineitem", "nation", "orders", "part", "partsupp", "region", "supplier"]:
     # for table_name in ["nation"]:
 
-        data_dir = "/home/raunaks3/TPC-H/dbgen/data-1gb/"
-        csv_file = data_dir + table_name + ".csv"
+        csv_file = DATASET_BASE_DIR + table_name + ".csv"
         # table = pd.read_csv(csv_file, parse_dates=True)
         # print(table.dtypes)
 
         pyarrow_table = csv.read_csv(csv_file)
 
-
         # pyarrow_table = pa.Table.from_pandas(table)
         print(pyarrow_table.schema)
         # Write to disk using QPL compression in Parquet format using PyArrow
-        parquet_file = DATASET_BASE_DIR + table_name + ".parquet"
+        parquet_file = DATASET_PARQUET_DIR + table_name + ".parquet"
         pq.write_table(pyarrow_table, parquet_file, compression=compression_codec)
 
-def save_query_result(q_res, Q_NUM):
-    q_res.write_parquet(f"/home/raunaks3/TPC-H/dbgen/data-1gb/parquet/queries/q{Q_NUM}.parquet", use_pyarrow=True, compression='qpl')
+
+def save_query_result(q_res, Q_NUM, compression_codec: str = "qpl"):
+    q_res.write_parquet(f"{DATASET_PARQUET_DIR}queries/q{Q_NUM}.parquet", use_pyarrow=True, compression=compression_codec)
 
 
 def run_query(q_num: int, lp: pl.LazyFrame):

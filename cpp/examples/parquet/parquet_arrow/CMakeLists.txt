@@ -51,10 +51,21 @@ find_package(QPL CONFIG REQUIRED)
 
 add_executable(parquet-arrow-example reader_writer.cc)
 
+add_executable(qpl-filter-testing read_tpch.cc)
+
+
 target_link_libraries(parquet-arrow-example QPL::qpl)
 
 if(PARQUET_LINK_SHARED)
   target_link_libraries(parquet-arrow-example Parquet::parquet_shared)
 else()
   target_link_libraries(parquet-arrow-example Parquet::parquet_static)
+endif()
+
+target_link_libraries(qpl-filter-testing QPL::qpl)
+
+if(PARQUET_LINK_SHARED)
+  target_link_libraries(qpl-filter-testing Parquet::parquet_shared)
+else()
+  target_link_libraries(qpl-filter-testing Parquet::parquet_static)
 endif()

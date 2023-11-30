@@ -532,7 +532,7 @@ def q11(Q_NUM):
             .sort(["value"], descending=[True])
         )
 
-    # print(q_final.head(10))
+    print(q_final.head(10))
     return q_final
 
 def q12(Q_NUM):
@@ -978,11 +978,16 @@ def q22(Q_NUM):
 if __name__ == "__main__":
 
     for Q_NUM in range(1, 23):
+    # for Q_NUM in range(11, 12):
+
         function_name = 'q' + str(Q_NUM)
         function = globals()[function_name]
         q_res = function(Q_NUM)
+        if q_res.shape[0] == 0:
+            print("Table is empty")
+            continue
 
         with CodeTimer(f"Q{Q_NUM} - Write Time", unit='s', logger_func=my_logger.info):
-            utils.save_query_result(q_res, Q_NUM=Q_NUM)
+            utils.save_query_result(q_res, Q_NUM=Q_NUM, compression_codec="qpl")
 
     # q1()
