@@ -23,7 +23,8 @@
 [![License](http://img.shields.io/:license-Apache%202-blue.svg)](https://github.com/apache/arrow/blob/main/LICENSE.txt)
 [![Twitter Follow](https://img.shields.io/twitter/follow/apachearrow.svg?style=social&label=Follow)](https://twitter.com/apachearrow)
 
-## Intel IAA Modifications
+
+## Modifications for Intel IAA
 
 In order to use arrow with the Intel IAA Accelerator, we need to build both arrow and QPL separately.
 
@@ -119,7 +120,16 @@ cmake --build . --target install
 sudo python3 /home/<USER>/qpl_library/qpl_installation/share/QPL/scripts/accel_conf.py --load=/home/<USER>/qpl_library/qpl_installation/share/QPL/configs/1n1d1e1w-s-n2.conf
 ```
 
-The testing file is `arrow/cpp/examples/parquet/parquet_arrow/reader-writer.cc`.
+**Testing**
+Before testing the arrow-qpl integration, it makes sense to test whether qpl runs normally on its own. You can do this by running:
+```
+cd ~/qpl_library/examples/low-level-api
+g++ -I/home/raunaks3/qpl_library/qpl_installation/include -o compression_example compression_example.cpp /home/raunaks3/qpl_library/qpl_installation/lib/libqpl.a -ldl
+sudo ./compression_example software_path
+```
+Any issues in the above step need to be fixed before moving forward.
+
+Now, the normal testing file is `arrow/cpp/examples/parquet/parquet_arrow/reader-writer.cc`.
 It creates a table, writes it to disk as a parquet file using compression with QPL, and then reads and decompresses the file (also using QPL). Currently this is working with both the software path (no accelerator) and hardware path (IAA accelerator).
 
 To test and run (note that if we change any source code in the main arrow repository we need to rebuild arrow before running the following):
@@ -132,10 +142,19 @@ make
 ./parquet-compression-example
 ```
 
-TODOs - 
-1. Test in different settings and benchmark performance
+Testing compression/decompression performance on TPCH data:
 
------------------------------------------------
+Details are given in `/home/raunaks3/arrow/python/TPCH_README.md`
+
+What's done
+1. Compression/Decompression with QPL. The new compression codec is in `cpp/src/arrow/util/compression_qpl.cc` and any relevant files in the repository have been modified accordingly. Testing details are given above.
+2. Testing performance speedup on TPCH data for compression/decompression
+3. Loading TPCH data in C++ for the filtering step
+
+Work in progress - 
+1. Testing filtering speedup in QPL compared to arrow
+
+---------------- **Original Apache Arrow README continues from this point onwards** ----------------
 
 ## Powering In-Memory Analytics
 
