@@ -30,7 +30,8 @@ In order to use arrow with the Intel IAA Accelerator, we need to build both arro
 
 Arrow build instructions:
 ```
-git clone https://github.com/apache/arrow.git
+git clone https://github.com/illinoisdata/arrow-qpl.git
+mv arrow-qpl arrow
 pushd arrow
 git submodule update --init
 export PARQUET_TEST_DATA="${PWD}/cpp/submodules/parquet-testing/data"
@@ -139,7 +140,7 @@ mkdir qpl_build
 cd qpl_build
 cmake ..
 make
-./parquet-compression-example
+./parquet-arrow-example
 ```
 
 Testing compression/decompression performance on TPCH data:
